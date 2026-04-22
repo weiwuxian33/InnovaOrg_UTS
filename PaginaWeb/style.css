@@ -1,0 +1,345 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important; /* Quitamos sombras para un look más "pincel" */
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Serif SC', 'Segoe UI', serif;
+    background-color: #f7f3e8; /* Un beige claro tipo papel antiguo o piedra */
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* --- CLASES DE ESTILO --- */
+.chinese-text {
+    font-weight: bold;
+}
+
+.pincelada-brush {
+    /* Simulamos texto pintado */
+    color: #444; 
+    font-size: 1.2rem;
+    padding-left: 10px;
+    border-left: 5px solid rgba(0,0,0,0.5); /* Esto simula el inicio de la pincelada */
+    display: inline-block;
+    letter-spacing: 1px;
+    background: linear-gradient(to right, rgba(0,0,0,0.1) 0%, rgba(247, 243, 232, 0) 100%);
+    margin-bottom: 10px;
+}
+
+/* --- ESTRUCTURA PRINCIPAL --- */
+.main-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* -- PINCELADAS DE FONDO -- */
+.ink-blot-1, .ink-blot-2 {
+    position: absolute;
+    background-color: rgba(0,0,0,0.03); /* Manchas de tinta muy sutiles */
+    border-radius: 50%;
+    filter: blur(20px);
+    z-index: -1;
+}
+
+.ink-blot-1 { width: 300px; height: 300px; top: 10%; left: -50px; }
+.ink-blot-2 { width: 400px; height: 400px; bottom: 10%; right: -100px; }
+
+/* -- BARRA DE NAVEGACIÓN -- */
+.navbar {
+    height: 140px; /* Aumentado para que quepa tu logo de 100px */
+    background-color: rgba(255,255,255,0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+    position: sticky; /* Se queda arriba al hacer scroll */
+    top: 0;
+    z-index: 100;
+}
+
+/* CENTRADO DEL CONTENEDOR DEL LOGO */
+.navbar .logo {
+    position: absolute;
+    left: 93%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    
+}
+
+/* 1. Cómo se ve el logo SIEMPRE */
+.navbar .logo img {
+    height: 100px; /* Tu tamaño deseado */
+    width: auto;
+    transition: all 0.6s ease-in-out; /* Bajé un poco de 0.9s a 0.6s para que sea más fluido */
+    filter: drop-shadow(0 0 5px rgba(181, 140, 90, 0.3));
+}
+
+/* 2. Qué pasa cuando pones el ratón ENCIMA (Hover) */
+.navbar .logo img:hover {
+    transform: scale(1.15); /* Efecto de agrandado */
+    filter: drop-shadow(0 0 20px rgba(181, 140, 90, 0.8));
+    cursor: pointer;
+}
+
+/* ENLACES DEL MENÚ */
+.nav-links a {
+    text-decoration: none;
+    color: #444;
+    margin-left: 20px;
+    font-size: 1.0rem;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a.active, .nav-links a:hover {
+    color: #b58c5a; /* Color café dorado */
+    border-bottom: 2px solid #b58c5a;
+}
+
+/* -- GRID DE CONTENIDO -- */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr; /* Columna central un poco más ancha para el fondo */
+    gap: 20px;
+    flex-grow: 1;
+    padding: 50px;
+    align-items: center; 
+}
+
+/* -- COLUMNA IZQUIERDA -- */
+.char-info {
+    text-align: right; 
+}
+
+.big-calligraphy {
+    font-size: 10rem;
+    display: block;
+    margin-bottom: -10px;
+    color: #b58c5a;
+}
+
+.english-name {
+    font-size: 1.8rem;
+    color: #b58c5a;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.calligraphy-block {
+    margin-bottom: 20px;
+}
+
+.calligraphy-block .description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.english-text {
+    opacity: 1.0;
+}
+
+/* Estilo del botón de Uiverse.io */
+/* Botón Uiverse con colores dorados del juego */
+.btn {
+    transition: all 0.4s ease-in-out;
+    font-family: 'Noto Serif SC', serif; /* Tu fuente elegante */
+    width: 180px; 
+    height: 60px;
+    border-radius: 50px;
+    
+    /* DEGRADADO DORADO: De un crema claro a tu dorado principal */
+    background-image: linear-gradient(135deg, #fceabb 0%, #b58c5a 100%);
+    
+    /* SOMBRA DORADA: Usamos rgba de tu color dorado #b58c5a */
+    box-shadow: 0 15px 25px -5px rgba(181, 140, 90, 0.6);
+    
+    outline: none;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a1a1a; /* Texto oscuro para que resalte sobre el dorado */
+    margin-top: 20px;
+}
+
+.btn:hover {
+    transform: translateY(3px);
+    /* Al pasar el mouse el brillo se vuelve más intenso */
+    box-shadow: 0 5px 15px rgba(181, 140, 90, 0.4);
+    background-image: linear-gradient(135deg, #b58c5a 0%, #fceabb 100%); /* Invierte el degradado */
+}
+
+.btn:active {
+    opacity: 0.7;
+    transform: translateY(5px);
+}
+
+/* -- COLUMNA CENTRAL -- */
+.char-image {
+    position: relative;
+    text-align: center;
+}
+
+/* -- COLUMNA CENTRAL (EL PERSONAJE GIGANTE) -- */
+.char-image {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5; /* Por encima del fondo, pero bajo el menú */
+}
+
+.main-character-img {
+
+    position: absolute; 
+    height: 60vh; 
+    width: auto;
+    max-width: none; 
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -48%);
+    filter: drop-shadow(0 0 50px rgba(181, 140, 90, 0.8)) saturate(0.8) contrast(1.2) brightness(1.0);
+    pointer-events: none; 
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transition: all 2.0s ease-in-out;
+    z-index: 5;
+    animation: breathing 4s ease-in-out infinite;
+}
+
+/* LA MAGIA DE LA RESPIRACIÓN */
+@keyframes breathing {
+    0% {
+        transform: translate(-50%, -48%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.03); /* Sube un poquito y se agranda */
+    }
+    100% {
+        transform: translate(-50%, -48%) scale(1);
+    }
+
+}
+
+
+/* -- COLUMNA DERECHA (ESTADÍSTICAS) -- */
+.char-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 10; /* Para que las stats queden POR ENCIMA del personaje si se cruzan */
+    padding-left: 20px;
+}
+
+/* Efecto extra para las stats: las hace resaltar más sobre el personaje gigante */
+.icon-group, .radar-placeholder {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.icon-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.icon-slot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    opacity: 0.6;
+}
+
+.icon-slot.active {
+    opacity: 1.0;
+    border: 3px solid #b58c5a;
+    box-shadow: 0 0 15px rgba(181, 140, 90, 0.5) !important;
+    transform: scale(1.1);
+}
+
+.dummy-radar {
+    width: 250px;
+    height: 250px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    position: relative;
+    margin-top: 10px;
+}
+
+.axis {
+    position: absolute;
+    font-size: 1.0rem;
+    color: #b58c5a;
+}
+
+.attack { top: -30px; left: 50%; transform: translateX(-50%); }
+.defense { bottom: -30px; left: 50%; transform: translateX(-50%); }
+.speed { left: -38px; top: 50%; transform: translateY(-50%); }
+.health { right: -35px; top: 50%; transform: translateY(-50%); }
+
+/* -- PINCELADA DE TÍTULO INFERIOR -- */
+.bottom-title-pincelada {
+    position: absolute;
+    bottom: 30px;
+    right: 50px;
+    font-size: 1.2rem;
+    color: rgba(0,0,0,0.6);
+}
+
+.pincelada-border {
+    position: relative;
+}
+
+.pincelada-border::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: inherit;
+    z-index: -1;
+    background: radial-gradient(rgba(0,0,0,0.0) 0%, transparent 10%);
+} /* <-- ESTA LLAVE FALTABA AQUÍ */
+
+.music-control-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 50px;
+    height: 50px;
+    background: rgba(181, 140, 90, 0.8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    z-index: 1000;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+}
+
+.music-control-btn:hover {
+    transform: scale(1.1);
+}

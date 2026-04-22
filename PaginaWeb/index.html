@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Estilo Chino</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <audio id="bg-music" loop>
+        <source src="assets/musica.mp3" type="audio/mpeg">
+        Tu navegador no soporta el audio.
+    </audio>
+
+    <div id="music-toggle" class="music-control-btn">🔊</div>
+</audio>
+
+    
+
+    <div class="main-wrapper">
+        <div class="ink-blot-1"></div>
+        <div class="ink-blot-2"></div>
+
+        <header class="navbar">
+            <div class="logo">
+                <img src="assets/logo.png" alt="Logo">
+            </div>
+            <nav class="nav-links">
+                <a href="#">Official Web (官网首页)</a>
+                <a href="#">News (新闻)</a>
+                <a href="#" class="active">Characters (角色)</a>
+            </nav>
+        </header>
+
+        <main class="content-grid">
+            
+            <section class="char-info">
+                <h1 class="character-name">
+                    <span class="chinese-text big-calligraphy">天龙</span>
+                    <span class="english-name">Tiān Lóng <br>Heavenly Dragon</span>
+                </h1>
+                <p class="subtitle chinese-text">“九天之上，唯我独尊” <br>"Above the nine heavens, I am supreme."</p>
+                <div class="calligraphy-block">
+                    <p class="pincelada-brush">武林绝学</p>
+                    <p class="description chinese-text">
+                        天龙派弟子擅长剑法，速度惊人，以身法灵动著称。<br>
+                    </p>
+                    <p class="description english-text">
+                        Tian Long disciples are masters of the blade, striking with startling velocity and famed for the fluid grace of their footwork
+                    </p>
+                </div>
+                <button id="view-skill" class="btn">查看技能 (View Skill)</button>
+            </section>
+            
+            <section class="char-image">
+                <img src="assets/personaje.png" alt="Personaje" class="main-character-img">
+            </section>
+            
+            <section class="char-stats">
+                <div class="icon-group pincelada-border">
+                    <div class="icon-slot active">⚔️</div>
+                    <div class="icon-slot">✨</div>
+                    <div class="icon-slot">🛡️</div>
+                    <div class="icon-slot">💧</div>
+                </div>
+                
+                <div class="radar-placeholder pincelada-border">
+                    <p class="chinese-text">能力分析</p>
+                    <div class="dummy-radar">
+                        <div class="axis attack chinese-text">攻击</div>
+                        <div class="axis defense chinese-text">防御</div>
+                        <div class="axis speed chinese-text">速度</div>
+                        <div class="axis health chinese-text">生命</div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+        
+        <div class="bottom-title-pincelada pincelada-brush">天龙 - character profile</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
