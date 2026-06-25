@@ -5,10 +5,26 @@ const SUPABASE_ANON_KEY = 'sb_publishable_TKO64m749jBBQCAbh4SVbA_aC0hplzx'
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 async function listarProductos() {
-    const { data } = await supabase.from('productos').select('*')
+    // Pedimos todo (*) de la tabla productos
+    const { data, error } = await supabase.from('productos').select('*')
+    
+    if (error) {
+        console.error("Error al obtener datos:", error)
+        return
+    }
+    
     const tabla = document.getElementById('tabla-productos')
-    if (data) {
-        tabla.innerHTML = data.map(p => `<tr><td>${p.nombre}</td><td>$${p.precio}</td></tr>`).join('')
+    if (data && data.length > 0) {
+        tabla.innerHTML = data.map(p => `
+            <tr>
+                <td>${p.nombre}</td>
+                <td>${p.descripcion || '-'}</td>
+                <td>$${p.precio}</td>
+                <td>${p.stock}</td>
+            </tr>
+        `).join('')
+    } else {
+        tabla.innerHTML = "<tr><td colspan='4'>No hay datos disponibles</td></tr>"
     }
 }
 
