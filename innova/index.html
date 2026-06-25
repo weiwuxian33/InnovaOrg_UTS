@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Innova | Gestión Profesional</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Innova Corp</h1>
+            <p>Gestión y Desarrollo de Servicios</p>
+        </header>
+
+        <section class="glass-card">
+            <h2>Registrar Nuevo Usuario</h2>
+            <input type="email" id="email" placeholder="correo@ejemplo.com">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button onclick="registrar()">Crear Cuenta</button>
+        </section>
+
+        <section class="glass-card">
+            <h2>Catálogo de Servicios</h2>
+            <table>
+                <thead>
+                    <tr><th>Servicio</th><th>Precio</th></tr>
+                </thead>
+                <tbody id="tabla-productos"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <footer>
+        <p>Realizado por <strong>Wikelman Moreno</strong></p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
