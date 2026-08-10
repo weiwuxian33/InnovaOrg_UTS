@@ -14,9 +14,14 @@ class Config:
     # Si no hay DATABASE_URL, usar SQLite para desarrollo local
     if not SQLALCHEMY_DATABASE_URI:
         SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'innova_corp.db')}"
-    # Supabase usa postgres:// pero Flask-SQLAlchemy requiere postgresql://
-    elif SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
-        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
+    else:
+        # Supabase usa postgres:// pero Flask-SQLAlchemy requiere postgresql://
+        if SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
+            SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
+        # Supabase requiere SSL para conexiones remotas
+        if 'sslmode=' not in SQLALCHEMY_DATABASE_URI:
+            separator = '&' if '?' in SQLALCHEMY_DATABASE_URI else '?'
+            SQLALCHEMY_DATABASE_URI += f'{separator}sslmode=require'
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
