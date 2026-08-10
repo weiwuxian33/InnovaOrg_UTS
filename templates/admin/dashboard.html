@@ -1,0 +1,100 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Panel de Control{% endblock %}
+{% block encabezado %}Panel de Control{% endblock %}
+{% block subtitulo %}Resumen general del sistema Innova Corp{% endblock %}
+
+{% block contenido %}
+<div class="stats-row">
+    <div class="stat-card accent">
+        <div class="stat-num">{{ total_servicios }}</div>
+        <div class="stat-lbl">Servicios / Productos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ total_clientes }}</div>
+        <div class="stat-lbl">Clientes registrados</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ total_pedidos }}</div>
+        <div class="stat-lbl">Pedidos totales</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ total_tecnicos }}</div>
+        <div class="stat-lbl">Técnicos activos</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">${{ '%.2f'|format(valor_inventario) }}</div>
+        <div class="stat-lbl">Valor de inventario</div>
+    </div>
+</div>
+
+<div class="charts-row">
+    <div class="card">
+        <h3>Pedidos por estado</h3>
+        <p class="card-desc">Distribución actual de los pedidos registrados.</p>
+        <canvas id="graficoPedidos" height="200"></canvas>
+    </div>
+    <div class="card">
+        <h3>Servicios vs. productos</h3>
+        <p class="card-desc">Composición del catálogo por tipo.</p>
+        <canvas id="graficoCatalogo" height="200"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Pedidos de los últimos 7 días</h3>
+    <p class="card-desc">Volumen diario de pedidos creados esta semana.</p>
+    <canvas id="graficoSemana" height="90"></canvas>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+async function cargarGraficos() {
+    const resp = await fetch("{{ url_for('api_dashboard_data') }}");
+    const d = await resp.json();
+
+    new Chart(document.getElementById('graficoPedidos'), {
+        type: 'doughnut',
+        data: {
+            labels: d.pedidos_por_estado.labels,
+            datasets: [{
+                data: d.pedidos_por_estado.data,
+                backgroundColor: ['#f2a93b', '#667eea', '#22a565', '#e5484d']
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('graficoCatalogo'), {
+        type: 'pie',
+        data: {
+            labels: d.catalogo.labels,
+            datasets: [{
+                data: d.catalogo.data,
+                backgroundColor: ['#667eea', '#764ba2']
+            }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    new Chart(document.getElementById('graficoSemana'), {
+        type: 'bar',
+        data: {
+            labels: d.pedidos_semana.labels,
+            datasets: [{
+                label: 'Pedidos',
+                data: d.pedidos_semana.data,
+                backgroundColor: '#667eea',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+    });
+}
+cargarGraficos();
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Productos{% endblock %}
+{% block encabezado %}Productos y Servicios{% endblock %}
+{% block subtitulo %}Catálogo que se muestra en el sitio público{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    <h3>Agregar nuevo producto o servicio</h3>
+    <form method="POST" action="{{ url_for('admin_productos') }}">
+        <div class="form-grid">
+            <div>
+                <label>Código interno</label>
+                <input type="text" name="codigo_interno" placeholder="SRV-003" required>
+            </div>
+            <div>
+                <label>Nombre</label>
+                <input type="text" name="nombre" required>
+            </div>
+            <div>
+                <label>Tipo</label>
+                <select name="tipo">
+                    <option value="servicio">Servicio</option>
+                    <option value="producto">Producto</option>
+                </select>
+            </div>
+            <div>
+                <label>Precio unitario ($)</label>
+                <input type="number" name="precio_unitario" step="0.01" min="0" required>
+            </div>
+            <div>
+                <label>Stock</label>
+                <input type="number" name="stock" min="0" value="0">
+            </div>
+            <div class="form-grid full">
+                <label>Descripción</label>
+                <input type="text" name="descripcion">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    {% if servicios %}
+    <table class="tabla-admin">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Valor total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in servicios %}
+            <tr>
+                <td>{{ s.codigo_interno }}</td>
+                <td>{{ s.nombre }}</td>
+                <td>{{ s.tipo }}</td>
+                <td>${{ '%.2f'|format(s.precio_unitario) }}</td>
+                <td>{{ s.stock }}</td>
+                <td>${{ '%.2f'|format(s.precio_unitario * s.stock) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay productos registrados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}

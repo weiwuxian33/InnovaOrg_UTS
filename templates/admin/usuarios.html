@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Usuarios{% endblock %}
+{% block encabezado %}Gestión de Usuarios{% endblock %}
+{% block subtitulo %}Cuentas registradas en el sistema y sus roles{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    {% if usuarios %}
+    <table class="tabla-admin">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Registrado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u.nombre_usuario }}</td>
+                <td>{{ u.correo }}</td>
+                <td><span class="badge badge-{{ u.rol }}">{{ u.rol }}</span></td>
+                <td>{{ u.fecha_creacion.strftime('%d/%m/%Y') if u.fecha_creacion else '-' }}</td>
+                <td>
+                    {% if u.rol in ['cliente', 'tecnico'] %}
+                    <form method="POST" action="{{ url_for('api_hacer_admin', id_usuario=u.id_usuario) }}"
+                          onsubmit="return confirm('¿Convertir a {{ u.correo }} en administrador?');">
+                        <button type="submit" class="btn btn-primary btn-sm">Hacer admin</button>
+                    </form>
+                    {% else %}
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">—</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay usuarios registrados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}

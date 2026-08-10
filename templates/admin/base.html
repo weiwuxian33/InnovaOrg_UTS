@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Panel{% endblock %} | Innova Corp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body">
+
+    <aside class="admin-sidebar">
+        <div class="brand">
+            <h1>Innova Corp</h1>
+            <span>Sistema de Gestión</span>
+        </div>
+        <ul class="admin-nav">
+            <li><a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if activo == 'dashboard' else '' }}">Panel de Control</a></li>
+            <li><a href="{{ url_for('admin_clientes') }}" class="{{ 'active' if activo == 'clientes' else '' }}">Clientes</a></li>
+            <li><a href="{{ url_for('admin_productos') }}" class="{{ 'active' if activo == 'productos' else '' }}">Productos</a></li>
+            <li><a href="{{ url_for('admin_pedidos') }}" class="{{ 'active' if activo == 'pedidos' else '' }}">Gestión de Pedidos</a></li>
+            <li><a href="{{ url_for('admin_tecnicos') }}" class="{{ 'active' if activo == 'tecnicos' else '' }}">Asignación de Técnicos</a></li>
+            <li><a href="{{ url_for('admin_usuarios') }}" class="{{ 'active' if activo == 'usuarios' else '' }}">Usuarios</a></li>
+            <li><a href="{{ url_for('admin_reportes') }}" class="{{ 'active' if activo == 'reportes' else '' }}">Reportes</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>{{ current_user.correo }}</p>
+            <a href="{{ url_for('index') }}">Ver sitio público</a> ·
+            <a href="{{ url_for('logout') }}">Salir</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <h2>{% block encabezado %}{% endblock %}</h2>
+                <p>{% block subtitulo %}{% endblock %}</p>
+            </div>
+            <div class="usuario-chip">{{ current_user.correo }} · {{ current_user.rol }}</div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for categoria, mensaje in messages %}
+                    <div class="alerta alerta-{{ categoria }}">{{ mensaje }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block contenido %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

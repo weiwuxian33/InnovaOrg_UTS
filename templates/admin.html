@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | Innova Corp</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>Innova Corp</h1>
+            <p>Panel de Administración</p>
+        </header>
+
+        <section class="glass-card">
+            <h2>Resumen del sistema</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-numero">{{ total_servicios }}</span>
+                    <span class="stat-label">Servicios/Productos</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-numero">{{ total_usuarios }}</span>
+                    <span class="stat-label">Usuarios registrados</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card">
+            <p>Bienvenido, <strong>{{ current_user.correo }}</strong>. Desde aquí se ampliará en la
+               Fase 3 con dashboard de gráficas, reportes de inventario/técnicos y facturación.</p>
+            <a href="{{ url_for('index') }}"><button type="button">Volver al sitio</button></a>
+            <a href="{{ url_for('logout') }}"><button type="button">Cerrar sesión</button></a>
+        </section>
+    </div>
+
+    <footer>
+        <p>Realizado por <strong>Wikelman Moreno</strong></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Pedidos{% endblock %}
+{% block encabezado %}Gestión de Pedidos{% endblock %}
+{% block subtitulo %}Pedidos registrados y su facturación{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    <h3>Registrar pedido rápido</h3>
+    <p class="card-desc">Crea un pedido de un solo ítem para pruebas o para generar su factura.</p>
+    <form method="POST" action="{{ url_for('admin_pedidos') }}">
+        <div class="form-grid">
+            <div>
+                <label>Cliente</label>
+                <select name="id_cliente" required>
+                    {% for c in clientes %}
+                    <option value="{{ c.id_cliente }}">{{ c.nombre_razon_social }} ({{ c.rif }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Técnico (opcional)</label>
+                <select name="id_tecnico">
+                    <option value="">— Sin asignar —</option>
+                    {% for t in tecnicos %}
+                    <option value="{{ t.id_tecnico }}">{{ t.nombre_completo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Servicio / Producto</label>
+                <select name="id_servicio" required>
+                    {% for s in servicios %}
+                    <option value="{{ s.id_servicio }}">{{ s.nombre }} — ${{ '%.2f'|format(s.precio_unitario) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Cantidad</label>
+                <input type="number" name="cantidad" min="1" value="1" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Crear pedido</button>
+        </div>
+    </form>
+    {% if not clientes %}
+    <p style="color: var(--danger); font-size: 0.85rem; margin-top: 10px;">
+        Registra al menos un cliente en la sección "Clientes" antes de crear un pedido.
+    </p>
+    {% endif %}
+</div>
+
+<div class="card">
+    {% if pedidos %}
+    <table class="tabla-admin">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Técnico</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pedidos %}
+            <tr>
+                <td>{{ p.id_pedido }}</td>
+                <td>{{ p.cliente.nombre_razon_social if p.cliente else '-' }}</td>
+                <td>{{ p.tecnico.nombre_completo if p.tecnico else '—' }}</td>
+                <td>{{ p.fecha_pedido.strftime('%d/%m/%Y') if p.fecha_pedido else '-' }}</td>
+                <td><span class="badge badge-{{ p.estado }}">{{ p.estado.replace('_',' ') }}</span></td>
+                <td>${{ '%.2f'|format(p.total) }}</td>
+                <td>
+                    <a class="btn btn-outline btn-sm" href="{{ url_for('generar_factura_pdf', id_pedido=p.id_pedido) }}">
+                        Generar Factura
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay pedidos registrados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Clientes{% endblock %}
+{% block encabezado %}Clientes{% endblock %}
+{% block subtitulo %}Directorio de clientes con sus datos fiscales{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    <h3>Registrar nuevo cliente</h3>
+    <p class="card-desc">El RIF se arma automáticamente a partir del tipo y número de documento.</p>
+    <form method="POST" action="{{ url_for('admin_clientes') }}">
+        <div class="form-grid">
+            <div>
+                <label>Nombre / Razón social</label>
+                <input type="text" name="nombre_razon_social" required>
+            </div>
+            <div>
+                <label>Correo</label>
+                <input type="email" name="correo">
+            </div>
+            <div>
+                <label>Tipo de documento</label>
+                <select name="tipo_documento" required>
+                    <option value="V">V - Venezolano</option>
+                    <option value="E">E - Extranjero</option>
+                    <option value="J">J - Jurídico</option>
+                    <option value="G">G - Gobierno</option>
+                    <option value="P">P - Pasaporte</option>
+                </select>
+            </div>
+            <div>
+                <label>Número de documento</label>
+                <input type="text" name="numero_documento" placeholder="12345678" required>
+            </div>
+            <div>
+                <label>Teléfono</label>
+                <input type="text" name="telefono">
+            </div>
+            <div class="form-grid full">
+                <label>Dirección fiscal</label>
+                <input type="text" name="direccion_fiscal" required>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar cliente</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    {% if clientes %}
+    <table class="tabla-admin">
+        <thead>
+            <tr>
+                <th>Nombre / Razón social</th>
+                <th>RIF</th>
+                <th>Dirección fiscal</th>
+                <th>Teléfono</th>
+                <th>Registrado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in clientes %}
+            <tr>
+                <td>{{ c.nombre_razon_social }}</td>
+                <td>{{ c.rif }}</td>
+                <td>{{ c.direccion_fiscal }}</td>
+                <td>{{ c.telefono or '-' }}</td>
+                <td>{{ c.fecha_registro.strftime('%d/%m/%Y') if c.fecha_registro else '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay clientes registrados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Reportes{% endblock %}
+{% block encabezado %}Reportes Estadísticos{% endblock %}
+{% block subtitulo %}Exporta la información del sistema en distintos formatos{% endblock %}
+
+{% block contenido %}
+<div class="charts-row">
+    <div class="card">
+        <h3>Reporte General del Sistema</h3>
+        <p class="card-desc">Resumen ejecutivo con el total de inventario y el directorio de clientes registrados.</p>
+        <a class="btn btn-primary" href="{{ url_for('reporte_general_pdf') }}">Exportar PDF</a>
+    </div>
+
+    <div class="card">
+        <h3>Reporte Semanal de Pedidos</h3>
+        <p class="card-desc">Pedidos generados durante los últimos 7 días, agrupados por estado.</p>
+        <a class="btn btn-primary" href="{{ url_for('reporte_semanal_pdf') }}">Exportar PDF</a>
+    </div>
+</div>
+
+<div class="charts-row">
+    <div class="card">
+        <h3>Listado de Inventario</h3>
+        <p class="card-desc">Todos los productos/servicios con ID, nombre, descripción, precio, stock y valor total.</p>
+        <a class="btn btn-success" href="{{ url_for('reporte_inventario_xlsx') }}">Exportar Excel (.xlsx)</a>
+    </div>
+
+    <div class="card">
+        <h3>Técnicos Disponibles</h3>
+        <p class="card-desc">Listado de técnicos activos, en formato CSV para importar en otras herramientas.</p>
+        <a class="btn btn-success" href="{{ url_for('reporte_tecnicos_csv') }}">Exportar CSV</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Facturas individuales</h3>
+    <p class="card-desc">
+        Cada factura en formato PDF (con IVA 16% y numeración fiscal) se genera desde la sección
+        <a href="{{ url_for('admin_pedidos') }}"><strong>Gestión de Pedidos</strong></a>, con el botón
+        "Generar Factura" en el pedido correspondiente.
+    </p>
+    <a class="btn btn-outline" href="{{ url_for('admin_pedidos') }}">Ir a Pedidos</a>
+</div>
+{% endblock %}

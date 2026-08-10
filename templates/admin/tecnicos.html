@@ -1,0 +1,68 @@
+{% extends "admin/base.html" %}
+{% block titulo %}Técnicos{% endblock %}
+{% block encabezado %}Asignación de Técnicos{% endblock %}
+{% block subtitulo %}Personal técnico disponible para atender pedidos{% endblock %}
+
+{% block contenido %}
+<div class="card">
+    <h3>Registrar técnico</h3>
+    <form method="POST" action="{{ url_for('admin_tecnicos') }}">
+        <div class="form-grid">
+            <div>
+                <label>Nombre completo</label>
+                <input type="text" name="nombre_completo" required>
+            </div>
+            <div>
+                <label>Cédula</label>
+                <input type="text" name="cedula" required>
+            </div>
+            <div>
+                <label>Especialidad</label>
+                <input type="text" name="especialidad" placeholder="Redes, hardware, software...">
+            </div>
+            <div>
+                <label>Teléfono</label>
+                <input type="text" name="telefono">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar técnico</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    {% if tecnicos %}
+    <table class="tabla-admin">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cédula</th>
+                <th>Especialidad</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tecnicos %}
+            <tr>
+                <td>{{ t.nombre_completo }}</td>
+                <td>{{ t.cedula }}</td>
+                <td>{{ t.especialidad or '-' }}</td>
+                <td>{{ t.telefono or '-' }}</td>
+                <td>
+                    {% if t.activo %}
+                        <span class="badge badge-completado">Activo</span>
+                    {% else %}
+                        <span class="badge badge-cancelado">Inactivo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No hay técnicos registrados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}

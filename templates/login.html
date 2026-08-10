@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | Innova Corp</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+    <div class="main-container">
+        <header>
+            <h1>innova_corp</h1>
+            <p>Iniciar sesión</p>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for categoria, mensaje in messages %}
+                    <div class="alerta alerta-{{ categoria }}">{{ mensaje }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <section class="glass-card">
+            <h2>Accede a tu cuenta</h2>
+            <form method="POST" action="{{ url_for('login') }}">
+                <input type="email" name="correo" placeholder="correo@ejemplo.com" autocomplete="email" required>
+                <input type="password" name="password" placeholder="Contraseña" autocomplete="current-password" required>
+                <button type="submit">Entrar</button>
+            </form>
+            <p class="link-secundario"><a href="{{ url_for('index') }}">Volver al inicio</a></p>
+        </section>
+    </div>
+
+    <footer class="legacy-footer">
+        <p>Realizado por <strong>Wikelman Moreno</strong></p>
+    </footer>
+</body>
+</html>

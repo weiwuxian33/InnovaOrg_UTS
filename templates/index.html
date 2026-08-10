@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innova Corp | Mantenimiento, software y hardware</title>
+    <meta name="description" content="Servicios técnicos y productos verificados, con factura fiscal y seguimiento real de cada pedido.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="site-nav">
+        <a href="{{ url_for('index') }}" class="brand-mark">
+            <span class="brand-prompt">innova_corp</span><span class="brand-cursor">_</span>
+        </a>
+        <nav class="nav-links">
+            <a href="#catalogo">Catálogo</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+        <div class="nav-auth">
+            {% if current_user.is_authenticated %}
+                <span class="user-chip">{{ current_user.correo }}</span>
+                {% if current_user.rol == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-ghost">Panel admin</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}" class="btn btn-outline">Salir</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-outline">Iniciar sesión</a>
+                <a href="#crear-cuenta" class="btn btn-solid">Crear cuenta</a>
+            {% endif %}
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-stack">
+            {% for categoria, mensaje in messages %}
+            <div class="alerta alerta-{{ categoria }}">{{ mensaje }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        <section class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">&gt; innova_corp.iniciar()</p>
+                <h1>Mantenimiento, software y hardware, <span>sin vueltas.</span></h1>
+                <p class="hero-sub">Servicios técnicos y productos verificados, con factura fiscal y seguimiento real de cada pedido — todo gestionado desde un solo sistema.</p>
+                <div class="hero-actions">
+                    <a href="#catalogo" class="btn btn-solid btn-lg">Ver catálogo</a>
+                    {% if not current_user.is_authenticated %}
+                    <a href="#crear-cuenta" class="btn btn-outline btn-lg">Crear cuenta</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="hero-console">
+                <div class="console-head">
+                    <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+                    <span class="console-title">estado_sistema.log</span>
+                </div>
+                <div class="console-body">
+                    <p><span class="k">items_catalogo</span><span class="v" id="statTotal">--</span></p>
+                    <p><span class="k">servicios</span><span class="v" id="statServicios">--</span></p>
+                    <p><span class="k">productos</span><span class="v" id="statProductos">--</span></p>
+                    <p><span class="k">unidades_en_stock</span><span class="v" id="statStock">--</span></p>
+                    <p class="console-status"><span class="pulse-dot"></span> sistema operativo</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="nosotros">
+            <p class="eyebrow center">&gt; por_que_innova_corp()</p>
+            <div class="features-grid">
+                <article class="feature-card">
+                    <span class="feature-icon">◎</span>
+                    <h3>Diagnóstico claro</h3>
+                    <p>Revisamos el equipo y explicamos el problema y el costo antes de intervenir nada.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon">✓</span>
+                    <h3>Técnicos verificados</h3>
+                    <p>Cada técnico está registrado en el sistema con cédula y especialidad, no improvisamos.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon">▤</span>
+                    <h3>Factura fiscal</h3>
+                    <p>Cada pedido se factura con RIF, IVA del 16% y numeración de control correlativa.</p>
+                </article>
+                <article class="feature-card">
+                    <span class="feature-icon">◈</span>
+                    <h3>Stock verificado</h3>
+                    <p>El inventario que ves en el catálogo es el mismo que maneja el equipo, en tiempo real.</p>
+                </article>
+            </div>
+        </section>
+
+        {% if current_user.is_authenticated %}
+        <section class="session-panel">
+            <div class="session-card">
+                <p class="eyebrow">&gt; sesion_activa</p>
+                <h2>Hola, {{ current_user.nombre_usuario }}</h2>
+                <p>Conectado como <strong>{{ current_user.correo }}</strong> · rol <strong>{{ current_user.rol }}</strong></p>
+                <div class="hero-actions" style="margin-top: 16px;">
+                    {% if current_user.rol == 'admin' %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-solid">Ir al panel admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="btn btn-outline">Cerrar sesión</a>
+                </div>
+            </div>
+        </section>
+        {% else %}
+        <section class="auth-panel" id="crear-cuenta">
+            <div class="auth-card">
+                <p class="eyebrow">&gt; usuarios.crear()</p>
+                <h2>Crea tu cuenta</h2>
+                <p class="hero-sub" style="margin-bottom: 0;">Regístrate para llevar el historial de tus servicios y recibir tus facturas.</p>
+                <div id="mensaje-registro" class="alerta" style="display:none;"></div>
+                <div class="auth-form">
+                    <input type="email" id="email" placeholder="correo@ejemplo.com" autocomplete="email">
+                    <input type="password" id="password" placeholder="Contraseña (mínimo 6 caracteres)" autocomplete="new-password">
+                    <button type="button" onclick="registrar()" class="btn btn-solid btn-block">Crear cuenta</button>
+                </div>
+                <p class="link-secundario">¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión</a></p>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="catalog" id="catalogo">
+            <div class="catalog-head">
+                <p class="eyebrow center">&gt; catalogo.listar()</p>
+                <h2>Catálogo de servicios y productos</h2>
+            </div>
+            <div class="catalog-controls">
+                <input type="search" id="buscador" placeholder="Buscar por nombre o descripción…">
+                <div class="chip-group" id="filtroChips">
+                    <button type="button" class="chip active" data-filtro="todos">Todos</button>
+                    <button type="button" class="chip" data-filtro="servicio">Servicios</button>
+                    <button type="button" class="chip" data-filtro="producto">Productos</button>
+                </div>
+            </div>
+            <div class="catalog-grid" id="catalogoGrid">
+                <p class="catalog-loading">Cargando catálogo…</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" id="contacto">
+        <div class="footer-brand">
+            <span class="brand-mark"><span class="brand-prompt">innova_corp</span></span>
+            <p>{{ empresa_nombre }} · RIF {{ empresa_rif }}</p>
+            <p>{{ empresa_direccion }}</p>
+        </div>
+        <div class="footer-meta">
+            <p>ventas@innovacorp.com</p>
+            <p>Realizado por <strong>Wikelman Moreno</strong></p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
