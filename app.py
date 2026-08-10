@@ -471,19 +471,23 @@ def inicializar_bd():
 @app.before_request
 def ensure_db():
     if not hasattr(app, '_db_initialized'):
-        with app.app_context():
-            db.create_all()
-            admin_existente = Usuario.query.filter_by(correo=Config.ADMIN_EMAIL).first()
-            if not admin_existente:
-                admin = Usuario(
-                    nombre_usuario=Config.ADMIN_USERNAME,
-                    correo=Config.ADMIN_EMAIL,
-                    rol='admin'
-                )
-                admin.set_password(Config.ADMIN_PASSWORD)
-                db.session.add(admin)
-                db.session.commit()
-        app._db_initialized = True
+        try:
+            with app.app_context():
+                db.create_all()
+                admin_existente = Usuario.query.filter_by(correo=Config.ADMIN_EMAIL).first()
+                if not admin_existente:
+                    admin = Usuario(
+                        nombre_usuario=Config.ADMIN_USERNAME,
+                        correo=Config.ADMIN_EMAIL,
+                        rol='admin'
+                    )
+                    admin.set_password(Config.ADMIN_PASSWORD)
+                    db.session.add(admin)
+                    db.session.commit()
+            app._db_initialized = True
+        except Exception as e:
+            print(f"[ERROR] Database initialization failed: {e}")
+            app._db_initialized = True
 
 
 if __name__ == '__main__':
