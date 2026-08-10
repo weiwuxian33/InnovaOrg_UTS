@@ -8,11 +8,16 @@ class Config:
     # Cambia esto en producción (usa una variable de entorno real)
     SECRET_KEY = os.environ.get('SECRET_KEY', 'cambia-esta-clave-en-produccion')
 
-    # Base de datos local SQLite (un solo archivo, sin servidor externo)
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'DATABASE_URL',
-        f"sqlite:///{os.path.join(BASE_DIR, 'innova_corp.db')}"
-    )
+    # Base de datos: PostgreSQL en Supabase (producción) o SQLite (desarrollo local)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
+    # Si no hay DATABASE_URL, usar SQLite para desarrollo local
+    if not SQLALCHEMY_DATABASE_URI:
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///{os.path.join(BASE_DIR, 'innova_corp.db')}"
+    # Supabase usa postgres:// pero Flask-SQLAlchemy requiere postgresql://
+    elif SQLALCHEMY_DATABASE_URI.startswith('postgres://'):
+        SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace('postgres://', 'postgresql://', 1)
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Credenciales del administrador por defecto (solo se crea si no existe)

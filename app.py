@@ -467,6 +467,25 @@ def inicializar_bd():
             print("[OK] Servicios de ejemplo insertados.")
 
 
+# Para Vercel: crear tablas en la primera petición
+@app.before_request
+def ensure_db():
+    if not hasattr(app, '_db_initialized'):
+        with app.app_context():
+            db.create_all()
+            admin_existente = Usuario.query.filter_by(correo=Config.ADMIN_EMAIL).first()
+            if not admin_existente:
+                admin = Usuario(
+                    nombre_usuario=Config.ADMIN_USERNAME,
+                    correo=Config.ADMIN_EMAIL,
+                    rol='admin'
+                )
+                admin.set_password(Config.ADMIN_PASSWORD)
+                db.session.add(admin)
+                db.session.commit()
+        app._db_initialized = True
+
+
 if __name__ == '__main__':
     inicializar_bd()
     app.run(debug=True)
