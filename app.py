@@ -1,6 +1,7 @@
 from functools import wraps
 from datetime import datetime, timedelta
 import io
+import random
 
 from dotenv import load_dotenv
 from flask import (
@@ -39,7 +40,9 @@ def admin_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if not current_user.is_authenticated or current_user.rol != 'admin':
-            flash('No tienes permisos para acceder a esa sección.', 'error')
+            if request.path.startswith('/api/') or request.headers.get('Accept') == 'application/json':
+                return jsonify({'error': 'No autorizado'}), 401
+            flash('No tienes permisos para acceder a esa seccion.', 'error')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated
@@ -466,23 +469,97 @@ def inicializar_bd():
             db.session.commit()
             print("[OK] Servicios de ejemplo insertados.")
 
+        # Datos de ejemplo para el dashboard
+        if Cliente.query.count() == 0:
+            clientes_data = [
+                Cliente(nombre_razon_social='María González', tipo_documento='V',
+                        numero_documento='12345678', rif='V-12345678',
+                        direccion_fiscal='Av. Libertador, Caracas', telefono='0412-1234567',
+                        correo='maria@email.com'),
+                Cliente(nombre_razon_social='Pedro Hernández', tipo_documento='V',
+                        numero_documento='23456789', rif='V-23456789',
+                        direccion_fiscal='Calle Principal, Valencia', telefono='0414-7654321',
+                        correo='pedro@email.com'),
+                Cliente(nombre_razon_social='Tech Solutions C.A.', tipo_documento='J',
+                        numero_documento='40123456', rif='J-40123456',
+                        direccion_fiscal='Torre Empresarial, Maracaibo', telefono='0261-9876543',
+                        correo='info@techsolutions.com'),
+            ]
+            for c in clientes_data:
+                db.session.add(c)
+            db.session.commit()
+            print("[OK] Clientes de ejemplo insertados.")
+
+        if Tecnico.query.count() == 0:
+            tecnicos_data = [
+                Tecnico(nombre_completo='Carlos Mendoza', cedula='V-18765432',
+                        especialidad='Redes y Servidores', telefono='0416-1112233'),
+                Tecnico(nombre_completo='Ana López', cedula='V-27654321',
+                        especialidad='Soporte de Hardware', telefono='0412-4445566'),
+            ]
+            for t in tecnicos_data:
+                db.session.add(t)
+            db.session.commit()
+            print("[OK] Técnicos de ejemplo insertados.")
+
+        if Pedido.query.count() == 0:
+            admin_user = Usuario.query.filter_by(correo=Config.ADMIN_EMAIL).first()
+            clientes = Cliente.query.all()
+            tecnicos = Tecnico.query.all()
+            servicios = Servicio.query.all()
+            if not clientes or not servicios:
+                print("[WARN] No hay clientes o servicios para crear pedidos de ejemplo.")
+            else:
+                estados = ['pendiente', 'en_proceso', 'completado', 'cancelado']
+                hoy = datetime.utcnow().date()
+                pedidos_creados = 0
+                for i in range(8):
+                    dias_atras = random.choice([0, 1, 1, 2, 3, 3, 5, 6])
+                    fecha = datetime.combine(hoy - timedelta(days=dias_atras),
+                                             datetime.min.time().replace(
+                                                 hour=random.randint(8, 18),
+                                                 minute=random.randint(0, 59)))
+                    estado = estados[i % len(estados)]
+                    cliente = random.choice(clientes)
+                    tecnico = random.choice(tecnicos) if random.random() > 0.3 else None
+
+                    pedido = Pedido(
+                        id_cliente=cliente.id_cliente,
+                        id_tecnico=tecnico.id_tecnico if tecnico else None,
+                        id_usuario_crea=admin_user.id_usuario if admin_user else None,
+                        fecha_pedido=fecha,
+                        estado=estado,
+                        observaciones=f'Pedido de ejemplo #{i + 1}',
+                    )
+                    db.session.add(pedido)
+                    db.session.flush()
+
+                    servicio = random.choice(servicios)
+                    cantidad = random.randint(1, 5)
+                    detalle = DetallePedido(
+                        id_pedido=pedido.id_pedido,
+                        id_servicio=servicio.id_servicio,
+                        cantidad=cantidad,
+                        precio_unitario=servicio.precio_unitario,
+                    )
+                    db.session.add(detalle)
+
+                    subtotal = float(servicio.precio_unitario) * cantidad
+                    iva = subtotal * Config.PORCENTAJE_IVA / 100 if not servicio.exento_iva else 0
+                    pedido.subtotal = subtotal
+                    pedido.monto_iva = iva
+                    pedido.total = subtotal + iva
+                    pedidos_creados += 1
+
+                db.session.commit()
+                print(f"[OK] {pedidos_creados} pedidos de ejemplo insertados.")
+
 
 # Para Vercel: crear tablas en la primera petición
 @app.before_request
 def ensure_db():
     if not hasattr(app, '_db_initialized'):
-        with app.app_context():
-            db.create_all()
-            admin_existente = Usuario.query.filter_by(correo=Config.ADMIN_EMAIL).first()
-            if not admin_existente:
-                admin = Usuario(
-                    nombre_usuario=Config.ADMIN_USERNAME,
-                    correo=Config.ADMIN_EMAIL,
-                    rol='admin'
-                )
-                admin.set_password(Config.ADMIN_PASSWORD)
-                db.session.add(admin)
-                db.session.commit()
+        inicializar_bd()
         app._db_initialized = True
 
 

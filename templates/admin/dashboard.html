@@ -48,52 +48,60 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
 async function cargarGraficos() {
-    const resp = await fetch("{{ url_for('api_dashboard_data') }}");
-    const d = await resp.json();
-
-    new Chart(document.getElementById('graficoPedidos'), {
-        type: 'doughnut',
-        data: {
-            labels: d.pedidos_por_estado.labels,
-            datasets: [{
-                data: d.pedidos_por_estado.data,
-                backgroundColor: ['#f2a93b', '#667eea', '#22a565', '#e5484d']
-            }]
-        },
-        options: { plugins: { legend: { position: 'bottom' } } }
-    });
-
-    new Chart(document.getElementById('graficoCatalogo'), {
-        type: 'pie',
-        data: {
-            labels: d.catalogo.labels,
-            datasets: [{
-                data: d.catalogo.data,
-                backgroundColor: ['#667eea', '#764ba2']
-            }]
-        },
-        options: { plugins: { legend: { position: 'bottom' } } }
-    });
-
-    new Chart(document.getElementById('graficoSemana'), {
-        type: 'bar',
-        data: {
-            labels: d.pedidos_semana.labels,
-            datasets: [{
-                label: 'Pedidos',
-                data: d.pedidos_semana.data,
-                backgroundColor: '#667eea',
-                borderRadius: 6
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    try {
+        const resp = await fetch("{{ url_for('api_dashboard_data') }}");
+        if (!resp.ok) {
+            console.error('Error al cargar datos del dashboard:', resp.status, resp.statusText);
+            return;
         }
-    });
+        const d = await resp.json();
+
+        new Chart(document.getElementById('graficoPedidos'), {
+            type: 'doughnut',
+            data: {
+                labels: d.pedidos_por_estado.labels,
+                datasets: [{
+                    data: d.pedidos_por_estado.data,
+                    backgroundColor: ['#f2a93b', '#667eea', '#22a565', '#e5484d']
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+
+        new Chart(document.getElementById('graficoCatalogo'), {
+            type: 'pie',
+            data: {
+                labels: d.catalogo.labels,
+                datasets: [{
+                    data: d.catalogo.data,
+                    backgroundColor: ['#667eea', '#764ba2']
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+
+        new Chart(document.getElementById('graficoSemana'), {
+            type: 'bar',
+            data: {
+                labels: d.pedidos_semana.labels,
+                datasets: [{
+                    label: 'Pedidos',
+                    data: d.pedidos_semana.data,
+                    backgroundColor: '#667eea',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+    } catch (err) {
+        console.error('Error al cargar graficos:', err);
+    }
 }
 cargarGraficos();
 </script>
