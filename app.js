@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const SUPABASE_URL = 'https://tjwgiwfuidtptsjvyglk.supabase.co'
-const SUPABASE_ANON_KEY = 'sb_publishable_TKO64m749jBBQCAbh4SVbA_aC0hplzx'
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRqd2dpd2Z1aWR0cHRzanZ5Z2xrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzNTA5ODYsImV4cCI6MjA5NzkyNjk4Nn0.x2YJ0xgixCICq9Tpt8qOcjK_LutRnHOi40Pf5FwSptI'
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 async function listarProductos() {
